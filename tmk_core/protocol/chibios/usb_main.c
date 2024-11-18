@@ -43,6 +43,7 @@
 #include "usb_device_state.h"
 #include "usb_descriptor.h"
 #include "usb_driver.h"
+#include "platforms/bootloader.h"
 
 #ifdef NKRO_ENABLE
 #    include "keycode_config.h"
@@ -650,6 +651,21 @@ static bool usb_request_hook_cb(USBDriver *usbp) {
      *  2,3: (LSB,MSB) wValue
      *  4,5: (LSB,MSB) wIndex
      *  6,7: (LSB,MSB) wLength (number of bytes to transfer if there is a data phase) */
+
+    if (((usbp->setup[0] & USB_RTYPE_TYPE_MASK) == USB_RTYPE_TYPE_CLASS) && ((usbp->setup[0] & USB_RTYPE_RECIPIENT_MASK) == USB_RTYPE_RECIPIENT_INTERFACE)) {
+        dprint("  TYPE_CLASS, RECIPIENT_INTERFACE\n");
+        if ((usbp->setup[0] & USB_RTYPE_DIR_MASK) == USB_RTYPE_DIR_HOST2DEV) {
+            if (usbp->setup[4] == RP2040_RESET_INTERFACE) {
+                switch (usbp->setup[1]) { /* bRequest */
+                    case 0x01: // RESET_REQUEST_BOOTSEL
+                    case 0x02: // RESET_REQUEST_FLASH
+                        dprint("  Reset interface\n");
+                        bootloader_jump();
+                    break;
+                }
+            }
+        }
+    }
 
     /* Handle HID class specific requests */
     if (((usbp->setup[0] & USB_RTYPE_TYPE_MASK) == USB_RTYPE_TYPE_CLASS) && ((usbp->setup[0] & USB_RTYPE_RECIPIENT_MASK) == USB_RTYPE_RECIPIENT_INTERFACE)) {

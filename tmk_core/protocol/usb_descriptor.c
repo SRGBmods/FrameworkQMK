@@ -738,6 +738,19 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .PollingIntervalMS      = USB_POLLING_INTERVAL_MS
     },
 #endif
+    .Rp2040_Reset_Interface = {
+        .Header = {
+            .Size               = sizeof(USB_Descriptor_Interface_t),
+            .Type               = DTYPE_Interface
+        },
+        .InterfaceNumber        = RP2040_RESET_INTERFACE,
+        .AlternateSetting       = 0x00,
+        .TotalEndpoints         = 2,
+        .Class                  = 0xFF,
+        .SubClass               = 0x00, // RESET_INTERFACE_SUBCLASS
+        .Protocol               = 0x01, // RESET_INTERFACE_PROTOCOL
+        .InterfaceStrIndex      = NO_DESCRIPTOR
+    },
 
 #ifdef CONSOLE_ENABLE
     /*
