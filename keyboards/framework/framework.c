@@ -305,6 +305,20 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         unregister_code(KC_LGUI);
       }
       return false; // Skip all further processing of this key
+    // Copilot key
+    // Simulate press WIN+SHIFT+F23
+    // TODO: Do this only if enabled by BIOS
+    case KC_RCTL:
+      if (record->event.pressed) {
+        register_code(KC_LGUI);
+        register_code(KC_LSFT);
+        register_code(KC_F23);
+      } else {
+        unregister_code(KC_F23);
+        unregister_code(KC_LSFT);
+        unregister_code(KC_LGUI);
+      }
+      return false; // Skip all further processing of this key
     default:
       return true; // Process all other keycodes normally
   }
