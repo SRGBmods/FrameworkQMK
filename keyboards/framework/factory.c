@@ -13,6 +13,10 @@
 #include "dyn_serial.h"
 #endif
 
+#ifdef SIGNALRGB_SUPPORT_ENABLE
+#    include "signalrgb.h"
+#endif
+
 enum factory_commands {
     f_emu_keypress  = 0x01, // Next byte is keycode
     f_serialnum     = 0x04, // Read device serial number
@@ -116,10 +120,20 @@ bool handle_hid(uint8_t *data, uint8_t length) {
 // Need add both functions to make it work when
 // either RAW_ENABLE or VIA_ENABLE are enabled.
 bool via_command_kb(uint8_t *data, uint8_t length) {
-  return handle_hid(data, length);
+#ifdef SIGNALRGB_SUPPORT_ENABLE
+    if (srgb_raw_hid_rx(data, length)) {
+        return true;
+    }
+#endif
+    return handle_hid(data, length);
 }
 #ifndef VIA_ENABLE
 void raw_hid_receive(uint8_t *data, uint8_t length) {
-  handle_hid(data, length);
+#ifdef SIGNALRGB_SUPPORT_ENABLE
+    if (srgb_raw_hid_rx(data, length)) {
+        return;
+    }
+#endif
+    handle_hid(data, length);
 }
 #endif

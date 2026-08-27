@@ -223,17 +223,17 @@ bool srgb_raw_hid_rx(uint8_t *data, uint8_t length) {
 }
 
 
-// This is always fun as different forks call either raw_hid_receive or via_command_kb 
+// This is always fun as different forks call either raw_hid_receive or via_command_kb
 // So this will probably always need to be massaged to work. When in doubt try raw_hid_receive_kb.
 
 #if defined(VIA_ENABLE)
-bool via_command_kb(uint8_t *data, uint8_t length) {
+__attribute__((weak)) bool via_command_kb(uint8_t *data, uint8_t length) {
     return srgb_raw_hid_rx(data, length);
-//void raw_hid_receive_kb(uint8_t *data, uint8_t length) {
-//srgb_raw_hid_rx(data, length);
+// void raw_hid_receive_kb(uint8_t *data, uint8_t length) {
+// srgb_raw_hid_rx(data, length);
 }
 #else
-void raw_hid_receive(uint8_t *data, uint8_t length) {
+__attribute__((weak)) void raw_hid_receive(uint8_t *data, uint8_t length) {
     srgb_raw_hid_rx(data, length);
 }
 #endif
