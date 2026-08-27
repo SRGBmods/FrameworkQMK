@@ -32,6 +32,7 @@ void led_streaming(uint8_t *data);
 void signalrgb_mode_enable(void);
 void signalrgb_mode_disable(void);
 void get_total_leds(void);
+bool srgb_raw_hid_rx(uint8_t *data, uint8_t length);
 
 //Changelogs for Firmware Versions------------------------------------
 //V1.0.1 added detection for the total number of LEDs a board has. Plugins need a rewrite to make use of this change. Rewritten plugins will not function with older firmware.
